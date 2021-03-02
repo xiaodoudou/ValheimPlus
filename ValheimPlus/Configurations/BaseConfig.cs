@@ -36,12 +36,11 @@ namespace ValheimPlus.Configurations
         public static T LoadIni(IniData data, string section, bool nested)
         {
             var n = new T();
-
             
             Debug.Log($"Loading config section {section}");
             if (!nested && (data[section] == null || data[section]["enabled"] == null || !data[section].GetBool("enabled")))
             {
-                Debug.Log(" Section not enabled");
+                Debug.Log($"Section {section} not enabled");
                 return n;
             }
 

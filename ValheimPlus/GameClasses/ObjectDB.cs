@@ -41,14 +41,11 @@ namespace ValheimPlus
         };
 
         [HarmonyPatch(typeof(ObjectDB), "Awake")]
-        public static class ModifyEffects
+        public static class ObjectDB_Awake_Patch
         {
             private static void Postfix(ObjectDB __instance)
             {
-                if (Configuration.Current.Effects.IsEnabled)
-                {
-                    ConfigureEffects(__instance);
-                }
+                ConfigureEffects();
             }
         }
         private static Skills.SkillType ParseAttackSkill(string attackSkill)
@@ -217,9 +214,15 @@ namespace ValheimPlus
             }
         }
 
-        private static void ConfigureEffects(ObjectDB __instance)
+        public static void ConfigureEffects()
         {
-            foreach (StatusEffect statusEffect in __instance.m_StatusEffects)
+
+            if (!Configuration.Current.Effects.IsEnabled)
+            {
+                return;
+            }
+            
+            foreach (StatusEffect statusEffect in ObjectDB.instance.m_StatusEffects)
             {
                 if (statusEffect is SE_Stats currentStatus)
                 {
