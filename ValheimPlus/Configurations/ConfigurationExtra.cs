@@ -73,7 +73,7 @@ namespace ValheimPlus.Configurations
             return conf;
         }
 
-        public static void LoadFromRemoteStream(Stream iniStream)
+        public static void LoadFromIni(Stream iniStream)
         {
             using (StreamReader iniReader = new StreamReader(iniStream))
             {
