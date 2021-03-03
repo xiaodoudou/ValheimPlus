@@ -73,7 +73,7 @@ namespace ValheimPlus.Configurations
             return conf;
         }
 
-        public static void LoadFromIni(Stream iniStream)
+        public static void LoadFromIniToConfiguration(Stream iniStream, Configuration config)
         {
             using (StreamReader iniReader = new StreamReader(iniStream))
             {
@@ -85,16 +85,16 @@ namespace ValheimPlus.Configurations
                     string keyName = prop.Name;
                     MethodInfo method = prop.PropertyType.GetMethod("LoadIni", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
                     // Only try to load syncConfig (which are the only sent), it will avoid some local configuration revert to default values
-                    if (configdata[keyName] != null && configdata[keyName]["enabled"] != null && configdata[keyName].GetBool("enabled"))
+                    if (configdata[keyName] != null && configdata[keyName]["enabled"] != null)
                     {
                         if (method != null)
                         {
-                            Debug.LogWarning($"Has {keyName} from remote");
-                            object result = method.Invoke(null, new object[] { configdata, keyName, false });
-                            prop.SetValue(Configuration.Current, result, null);
+                            object result = method.Invoke(null, new object[] { configdata, keyName });
+                            // Apply change to current configuration
+                            prop.SetValue(config, result, null);
                         }
                     }
-                    
+
                 }
             }
         }
@@ -126,7 +126,6 @@ namespace ValheimPlus.Configurations
             Debug.LogWarning($" [Int] Could not read {key}, using default value of {defaultVal}");
             return defaultVal;
         }
-
 
         public static string GetString(this KeyDataCollection data, string key, string defaultVal)
         {
