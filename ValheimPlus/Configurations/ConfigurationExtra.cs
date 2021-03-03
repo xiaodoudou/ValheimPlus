@@ -89,7 +89,7 @@ namespace ValheimPlus.Configurations
                     {
                         if (method != null)
                         {
-                            object result = method.Invoke(null, new object[] { configdata, keyName });
+                            object result = method.Invoke(null, new object[] { configdata, keyName, false });
                             // Apply change to current configuration
                             prop.SetValue(config, result, null);
                         }
