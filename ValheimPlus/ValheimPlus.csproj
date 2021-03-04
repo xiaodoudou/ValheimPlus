@@ -363,6 +363,7 @@
     <Compile Include="Configurations\Sections\WorkbenchConfiguration.cs" />
     <Compile Include="Configurations\Sections\StaminaUsageConfiguration.cs" />
     <Compile Include="Configurations\Sections\StaminaConfiguration.cs" />
+    <Compile Include="GameClasses\SE_Stats.cs" />
     <Compile Include="GameClasses\FejdStartup.cs" />
     <Compile Include="GameClasses\Fireplace.cs" />
     <Compile Include="GameClasses\GameCamera.cs" />

@@ -11,8 +11,7 @@ namespace ValheimPlus
 {
     class Effects
     {
-        private static Dictionary<string, string> effectsDictionary = new Dictionary<string, string>()
-        {
+        private static Dictionary<string, string> effectsDictionary = new Dictionary<string, string>() {
             { "$se_eikthyr_name", "eikthyr" },
             { "$se_theelder_name", "theElder" },
             { "$se_bonemass_name", "bonemass" },
@@ -41,59 +40,44 @@ namespace ValheimPlus
         };
 
         [HarmonyPatch(typeof(ObjectDB), "Awake")]
-        public static class ObjectDB_Awake_Patch
-        {
-            private static void Postfix(ObjectDB __instance)
-            {
+        public static class ObjectDB_Awake_Patch {
+            private static void Postfix(ObjectDB __instance) {
                 ConfigureEffects();
             }
         }
-        private static Skills.SkillType ParseAttackSkill(string attackSkill)
-        {
-            try
-            {
+
+        private static Skills.SkillType ParseAttackSkill(string attackSkill) {
+            try {
                 return (Skills.SkillType)Enum.Parse(typeof(Skills.SkillType), attackSkill.Trim(), true);
             }
-            catch (ArgumentException)
-            {
+            catch (ArgumentException) {
                 return Skills.SkillType.None;
             }
         }
 
-        private static HitData.DamageType ParseDamageType(string damageType)
-        {
-            try
-            {
+        private static HitData.DamageType ParseDamageType(string damageType) {
+            try {
                 return (HitData.DamageType)Enum.Parse(typeof(HitData.DamageType), damageType.Trim(), true);
-            }
-            catch (ArgumentException)
-            {
+            } catch (ArgumentException) {
                 return HitData.DamageType.Physical;
             }
         }
 
-        private static HitData.DamageModifier ParseDamageModifier(string damageModifier)
-        {
-            try
-            {
+        private static HitData.DamageModifier ParseDamageModifier(string damageModifier) {
+            try {
                 return (HitData.DamageModifier)Enum.Parse(typeof(HitData.DamageModifier), damageModifier.Trim(), true);
-            }
-            catch (ArgumentException)
-            {
+            } catch (ArgumentException) {
                 return HitData.DamageModifier.Ignore;
             }
         }
 
-        private static List<HitData.DamageModPair> ParseDamageTypesModifiers(string damageTypesModifiers)
-        {
+        private static List<HitData.DamageModPair> ParseDamageTypesModifiers(string damageTypesModifiers) {
             string[] damageTypeModifiers;
             List<HitData.DamageModPair> damageTypesModifiersListing = new List<HitData.DamageModPair>();
             damageTypeModifiers = damageTypesModifiers.Split('|');
-            foreach (string damageTypeModifier in damageTypeModifiers)
-            {
+            foreach (string damageTypeModifier in damageTypeModifiers) {
                 string[] damageTypeModifierConfiguration = damageTypeModifier.Split(':');
-                if (damageTypeModifierConfiguration.Length == 2)
-                {
+                if (damageTypeModifierConfiguration.Length == 2) {
                     HitData.DamageModPair damageModPair;
                     damageModPair.m_type = ParseDamageType(damageTypeModifierConfiguration[0]);
                     damageModPair.m_modifier = ParseDamageModifier(damageTypeModifierConfiguration[1]);
@@ -103,20 +87,15 @@ namespace ValheimPlus
             return damageTypesModifiersListing;
         }
 
-        private static void DisplayEffectStats(SE_Stats currentStatus, bool isBefore)
-        {
-            if (!Configuration.Current.Effects.debug)
-            {
+        private static void DisplayEffectStats(SE_Stats currentStatus, bool isBefore) {
+            if (!Configuration.Current.Effects.debug) {
                 return;
             }
 
             Debug.Log(string.Concat(Enumerable.Repeat("=", 86)));
-            if (isBefore)
-            {
+            if (isBefore) {
                 Debug.Log(String.Format("{0,-84} |", $"Effect: {effectsDictionary[currentStatus.m_name]}"));
-            }
-            else
-            {
+            } else {
                 Debug.Log(String.Format("{0,-84} |", $"After patching effect: {effectsDictionary[currentStatus.m_name]}"));
             }
             
@@ -133,8 +112,7 @@ namespace ValheimPlus
             Debug.Log(String.Format("{0,-26} | ", "staminaRegenMultiplier") + String.Format("{0,-26} | ", (currentStatus.m_staminaRegenMultiplier - 1) * 100) + String.Format("{0,-26} |", "Percentage"));
             Debug.Log(String.Format("{0,-26} | ", "stealthModifier") + String.Format("{0,-26} | ", currentStatus.m_stealthModifier * -100) + String.Format("{0,-26} |", "Percentage"));
             Debug.Log(String.Format("{0,-26} | ", "damageTypesModifiers") + String.Format("{0,-26} | ", currentStatus.m_mods.Count) + String.Format("{0,-26} |", "Pairs"));
-            foreach (HitData.DamageModPair mod in currentStatus.m_mods)
-            {
+            foreach (HitData.DamageModPair mod in currentStatus.m_mods) {
                 Debug.Log(String.Format("{0,-26} | ", $" > {mod.m_type}") + String.Format("{0,-26} | ", mod.m_modifier) + String.Format("{0,-26} |", "Combination"));
             }
             Debug.Log(String.Format("{0,-26} | ", "description") + String.Format("{0,-26} | ", currentStatus.m_tooltip.Trim()) + String.Format("{0,-26} |", "Text"));
@@ -147,69 +125,56 @@ namespace ValheimPlus
             DisplayEffectStats(currentStatus, true);
            
             bool isModified = false;
-            if (!float.IsNaN(configuration.cooldown))
-            {
+            if (!float.IsNaN(configuration.cooldown)) {
                 currentStatus.m_cooldown = configuration.cooldown;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.damageModifier))
-            {
+            if (!float.IsNaN(configuration.damageModifier)) {
                 currentStatus.m_damageModifier = 1 + configuration.damageModifier / 100;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.duration))
-            {
+            if (!float.IsNaN(configuration.duration)) {
                 currentStatus.m_ttl = configuration.duration;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.healthPerTick))
-            {
+            if (!float.IsNaN(configuration.healthPerTick)) {
                 currentStatus.m_healthPerTick = configuration.healthPerTick;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.healthRegenModifier))
-            {
+            if (!float.IsNaN(configuration.healthRegenModifier)) {
                 currentStatus.m_healthRegenMultiplier = 1 + configuration.healthRegenModifier / 100;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.jumpStaminaModifier))
-            {
+            if (!float.IsNaN(configuration.jumpStaminaModifier)) {
                 currentStatus.m_jumpStaminaUseModifier = configuration.jumpStaminaModifier / 100;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.runStaminaModifier))
-            {
+            if (!float.IsNaN(configuration.runStaminaModifier)) {
                 currentStatus.m_runStaminaDrainModifier = configuration.runStaminaModifier / 100;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.staminaRegenModifier))
-            {
+            if (!float.IsNaN(configuration.staminaRegenModifier)) {
                 currentStatus.m_staminaRegenMultiplier = 1 + configuration.staminaRegenModifier / 100;
                 isModified = true;
             }
-            if (!float.IsNaN(configuration.stealthModifier))
-            {
+            if (!float.IsNaN(configuration.stealthModifier)) {
                 currentStatus.m_stealthModifier = (configuration.stealthModifier / 100) * -1;
                 isModified = true;
             }
-            if (!string.IsNullOrEmpty(configuration.damageTypesModifiers))
-            {
+            if (!string.IsNullOrEmpty(configuration.damageTypesModifiers)) {
                 currentStatus.m_mods = ParseDamageTypesModifiers(configuration.damageTypesModifiers);
                 isModified = true;
             }
-            if (!string.IsNullOrEmpty(configuration.description.Trim()))
-            {
+            if (!string.IsNullOrEmpty(configuration.description.Trim())) {
                 currentStatus.m_tooltip = configuration.description.Trim();
                 isModified = true;
             }
-            if (!string.IsNullOrEmpty(configuration.modifyAttackSkill))
-            {
+            if (!string.IsNullOrEmpty(configuration.modifyAttackSkill)) {
                 currentStatus.m_modifyAttackSkill = ParseAttackSkill(configuration.modifyAttackSkill);
                 isModified = true;
             }
             
-            if (isModified)
-            {
+            if (isModified) {
                 DisplayEffectStats(currentStatus, false);
             }
         }
@@ -217,29 +182,23 @@ namespace ValheimPlus
         public static void ConfigureEffects()
         {
 
-            if (!Configuration.Current.Effects.IsEnabled)
-            {
+            if (!Configuration.Current.Effects.IsEnabled) {
                 return;
             }
             
-            foreach (StatusEffect statusEffect in ObjectDB.instance.m_StatusEffects)
-            {
-                if (statusEffect is SE_Stats currentStatus)
-                {
+            foreach (StatusEffect statusEffect in ObjectDB.instance.m_StatusEffects) {
+                if (statusEffect is SE_Stats currentStatus) {
                     PropertyInfo[] configurationsPropertyInfo = typeof(EffectsConfiguration).GetProperties();
                     Dictionary<string, PropertyInfo> properties = new Dictionary<string, PropertyInfo>();
-                    foreach(PropertyInfo configurationPropertyInfo in configurationsPropertyInfo)
-                    {
+                    foreach(PropertyInfo configurationPropertyInfo in configurationsPropertyInfo) {
                         properties.Add(configurationPropertyInfo.Name, configurationPropertyInfo);
                     }
                     
                     if (effectsDictionary.ContainsKey(currentStatus.m_name) && properties.ContainsKey(effectsDictionary[currentStatus.m_name])) {
                         MethodInfo[] methInfos = properties[effectsDictionary[currentStatus.m_name]].GetAccessors();
-                        for (int i = 0; i < methInfos.Length; i++)
-                        {
+                        for (int i = 0; i < methInfos.Length; i++) {
                             MethodInfo accessor = methInfos[i];
-                            if (accessor.ReturnType != typeof(void))
-                            {
+                            if (accessor.ReturnType != typeof(void)) {
                                 EffectsConfigurationItem configuration = (EffectsConfigurationItem)accessor.Invoke(Configuration.Current.Effects, new object[] { });
                                 ConfigureEffect(currentStatus, configuration);
                             }
