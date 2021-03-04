@@ -78,6 +78,11 @@ All of these features can be adjusted by a configuration file. This also allows 
 * Modify the physical weight of the Wagon received by items inside
 * Modify the base physical weight
 
+## Inventory
+* Extend player inventory up to 20 x 8
+* Extend chest inventory (wood up to 10 x 8, iron up to 20 x 8)
+* Change how inventory gets filled with materials (top to bottom or bottom to top)
+
 ## Items
 * Remove Item teleport prevention from all items
 * Reduce Item weight of all items by %
@@ -266,23 +271,9 @@ You only need to setup your server configuration file (located in the server fil
 If you are hosting for your friends over steam, your friends will need v+ and they will receive your local settings from your game folder.
 
 
-# Valheim Plus Compiler Requirements
+# Contributing to ValheimPlus
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on compiling V+ for development and contributing to the project.
 
-How to setup the development enviroment to compile ValheimPlus yourself.
-
-1. Download this package:
-https://mega.nz/file/0UAlxQwK#47InGOb8ViI6GyBDArpbhkbMTBklXdyRSmAc4-BZpJY
-
-2. Unpack into your Valheim root folder and overwrite every file when asked.
-
-3. Download this repository or the executable version of the Publicizer.
-Repo: https://github.com/MrPurple6411/Bepinex-Tools/releases/tag/1.0.0-Publicizer
-Exec: https://mega.nz/file/oQxEjCJI#_XPXEjwLfv9zpcF2HRakYzepMwaUXflA9txxhx4tACA
-
-4. Drag and drop all assembly_.dll files onto "AssemblyPublicizer.exe"
-
-5. Define Enviroment Variable `VALHEIM_INSTALL` with path to Valheim Install Directory  
-example: `setx VALHEIM_INSTALL "C:\Program Files\Steam\steamapps\common\Valheim" /M`
 
 # Credits
 
@@ -295,3 +286,4 @@ example: `setx VALHEIM_INSTALL "C:\Program Files\Steam\steamapps\common\Valheim"
 * Doudou 'xiaodoudou' - https://github.com/xiaodoudou
 * MrPurple6411#0415 - BepInEx Valheim version, AssemblyPublicizer
 * Mehdi 'AccretionCD' E. - https://github.com/AccretionCD
+* Zogniton - https://github.com/Zogniton - Inventiry Overhaul initial creator

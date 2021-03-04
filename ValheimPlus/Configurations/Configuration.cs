@@ -13,6 +13,8 @@ namespace ValheimPlus.Configurations
         public CameraConfiguration Camera { get; set; }
         public EffectsConfiguration Effects { get; set; }
         public ExperienceConfiguration Experience { get; set; }
+        public InventoryConfiguration Inventory { get; set; }
+        public ItemsConfiguration Items { get; set; }
         public FermenterConfiguration Fermenter { get; set; }
         public FireplaceConfiguration Fireplace { get; set; }
         public FoodConfiguration Food { get; set; }
@@ -20,7 +22,6 @@ namespace ValheimPlus.Configurations
         public GameConfiguration Game { get; set; }
         public HotkeyConfiguration Hotkeys { get; set; }
         public HudConfiguration Hud { get; set; }
-        public ItemsConfiguration Items { get; set; }
         public KilnConfiguration Kiln { get; set; }
         public MapConfiguration Map { get; set; }
         public PlayerConfiguration Player { get; set; }
