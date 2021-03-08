@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using HarmonyLib;
-using ValheimPlus.Configurations;
+﻿using HarmonyLib;
 
 namespace ValheimPlus
 {
@@ -10,7 +8,7 @@ namespace ValheimPlus
         /// Adding version data to console
         /// </summary>
         [HarmonyPatch(typeof(Console), "Awake")]
-        public static class HookConsole
+        public static class Console_Awake_Patch
         {
             private static void Postfix(ref Console __instance)
             {
