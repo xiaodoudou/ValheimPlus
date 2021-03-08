@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ValheimPlus.Configurations;
+using ValheimPlus.RPC;
 
 // ToDo add packet system to convey map markers
 namespace ValheimPlus
@@ -39,17 +40,43 @@ namespace ValheimPlus
     }
 
     /// <summary>
-    /// Sync server client configuration
+    /// Alter server player limit
     /// </summary>
-    [HarmonyPatch(typeof(ZNet), "RPC_PeerInfo")]
-    public static class ConfigServerSync
+    [HarmonyPatch(typeof(ZNet), "FixedUpdate")]
+    public static class VPlusServerTicks
     {
         private static void Postfix(ref ZNet __instance)
         {
+            if (__instance != null && __instance.IsServer() && Configuration.Current.Server.IsEnabled)
+            {
+                VPlusServer.instance.FixedUpdate();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Sync server client configuration
+    /// </summary>
+    [HarmonyPatch(typeof(ZNet), "RPC_PeerInfo")]
+    public static class VPlusServerRoutes
+    {
+        private static void Postfix(ref ZNet __instance, ZRpc rpc)
+        {
+            ZNetPeer peer = __instance.GetPeer(rpc);
+            if (peer == null)
+            {
+                return;
+            }
             if (!ZNet.m_isServer)
             {
-                ZLog.Log("-------------------- SENDING VPLUGCONFIGSYNC REQUEST");
-                ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.instance.GetServerPeerID(), "VPlusConfigSync", new object[] { new ZPackage() });
+                ZLog.Log("> Client will request V+ Config");
+                ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.instance.GetServerPeerID(), "VPlusConfigHandshake", new object[] { new ZPackage() });
+            }
+            else
+            { 
+                ZLog.Log("> Server will request to handshake V+ Version");
+                rpc.Register<string>("VPlusVersionCheck", new Action<ZRpc, string>(VPlusRPC.VersionCheckServer));
+                ZRoutedRpc.instance.InvokeRoutedRPC(peer.m_uid, "VPlusVersionCheck");
             }
         }
     }

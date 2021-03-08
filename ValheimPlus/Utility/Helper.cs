@@ -4,7 +4,7 @@ namespace ValheimPlus
 {
     static class Helper
     {
-		public static Character getPlayerCharacter(Player __instance)
+        public static Character getPlayerCharacter(Player __instance)
 		{
 			return (Character)__instance;
 		}

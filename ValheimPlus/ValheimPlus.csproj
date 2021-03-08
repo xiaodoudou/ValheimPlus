@@ -370,6 +370,7 @@
     <Compile Include="GameClasses\Hud.cs" />
     <Compile Include="GameClasses\TeleportWorld.cs" />
     <Compile Include="GameClasses\Humanoid.cs" />
+    <Compile Include="RPC\VPlusRPC.cs" />
     <Compile Include="ValheimPlus.cs" />
     <Compile Include="GameClasses\Fermenter.cs" />
     <Compile Include="GameClasses\Inventory.cs" />
@@ -381,14 +382,13 @@
     <Compile Include="GameClasses\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameClasses\Game.cs" />
-    <Compile Include="RPC\VPlusConfigSync.cs" />
+    <Compile Include="RPC\VPlusServer.cs" />
     <Compile Include="GameClasses\SteamGameServer.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="GameClasses\Minimap.cs" />
     <Compile Include="GameClasses\Smelter.cs" />
     <Compile Include="UI\VPlusMainMenu.cs" />
     <Compile Include="Utility\EmbeddedAsset.cs" />
-    <Compile Include="GameClasses\Version.cs" />
     <Compile Include="GameClasses\Vagon.cs" />
     <Compile Include="GameClasses\WearNTear.cs" />
     <Compile Include="GameClasses\EnvMan.cs" />

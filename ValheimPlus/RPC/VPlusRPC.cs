@@ -5,9 +5,9 @@ using ValheimPlus.Configurations;
 
 namespace ValheimPlus.RPC
 {
-    public class VPlusConfigSync
+    public class VPlusRPC
     {
-        public static void RPC_VPlusConfigSync(long sender, ZPackage configPkg)
+        public static void ConfigSync(long sender, ZPackage configPkg)
         {
             if (ZNet.m_isServer) //Server
             {
@@ -49,8 +49,8 @@ namespace ValheimPlus.RPC
             }
             else //Client
             {
-                if (configPkg != null && 
-                    configPkg.Size() > 0 && 
+                if (configPkg != null &&
+                    configPkg.Size() > 0 &&
                     sender == ZRoutedRpc.instance.GetServerPeerID()) //Validate the message is from the server and not another client.
                 {
                     int numLines = configPkg.ReadInt();
@@ -86,6 +86,33 @@ namespace ValheimPlus.RPC
                         }
                     }
                 }
+            }
+        }
+        public static void VersionCheckClient(long sender)
+        {
+            if (sender == ZRoutedRpc.instance.GetServerPeerID())
+            {
+                ZRpc serverRPC = ZNet.instance.GetServerRPC();
+                if (serverRPC != null)
+                {
+                    serverRPC.Invoke("VPlusVersionCheck", new object[] { ValheimPlusPlugin.version });
+                    ZLog.Log($"VPlus version {ValheimPlusPlugin.version} sent to peer #{sender}");
+                }
+            }
+        }
+
+        
+        public static void VersionCheckServer(ZRpc sender, string version)
+        {
+            ZNetPeer peer = ZNet.instance.GetPeer(sender);
+            if (peer == null)
+            {
+                return;
+            }
+            if (version != null && version.Length > 0 && peer.m_uid != ZRoutedRpc.instance.GetServerPeerID())
+            {
+                ZLog.Log($"Received VPlus version {version} from peer #{peer.m_uid}");
+                VPlusServer.instance.UpdatePlayerVersion(peer.m_uid, version);
             }
         }
     }

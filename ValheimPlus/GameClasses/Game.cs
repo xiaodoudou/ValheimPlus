@@ -14,7 +14,8 @@ namespace ValheimPlus
     {
         private static void Prefix()
         {
-            ZRoutedRpc.instance.Register("VPlusConfigSync", new Action<long, ZPackage>(VPlusConfigSync.RPC_VPlusConfigSync));
+            ZRoutedRpc.instance.Register("VPlusConfigSync", new Action<long, ZPackage>(VPlusRPC.ConfigSync));
+            ZRoutedRpc.instance.Register("VPlusVersionCheck", new Action<long>(VPlusRPC.VersionCheckClient));
         }
     }
 

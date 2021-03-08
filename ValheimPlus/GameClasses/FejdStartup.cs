@@ -81,4 +81,30 @@ namespace ValheimPlus
             return true;
         }
     }
+
+    /// <summary>
+    /// Prefix ShowConnectError to handle a better error message when ncompatible version is found
+    /// </summary>
+    [HarmonyPatch(typeof(FejdStartup), "ShowConnectError")]
+    public static class FejdStartup_ShowConnectError_Patch
+    {
+        private static bool Prefix(ref FejdStartup __instance)
+        {
+            ZNet.ConnectionStatus connectionStatus = ZNet.GetConnectionStatus();
+            if (connectionStatus != ZNet.ConnectionStatus.Connected && connectionStatus != ZNet.ConnectionStatus.Connecting && connectionStatus != ZNet.ConnectionStatus.None)
+            {
+                __instance.m_connectionFailedPanel.SetActive(true);
+                if (connectionStatus == ZNet.ConnectionStatus.ErrorVersion)
+                {
+                    string localClientVersion = Version.CombineVersion(global::Version.m_major, global::Version.m_minor, global::Version.m_patch);
+                    string localVPlus = ValheimPlusPlugin.version;
+                    __instance.m_connectionFailedError.text = Localization.instance.Localize("$error_incompatibleversion") + ":\n";
+                    __instance.m_connectionFailedError.text += $"Server: <color=green>ABC</color> You: <color=red>{localClientVersion}</color>\n";
+                    __instance.m_connectionFailedError.text += $"Server V+: <color=green>ABC</color> You: <color=red>{localVPlus}</color>";
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }
